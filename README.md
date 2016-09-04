@@ -8,7 +8,40 @@ lib/fluent/pluginフォルダに filter_datadiff.rb ファイルを配置する
 
 ## Configuration
 
-### Example:
+### Example 1:
+
+数値の差
+
+    <source>
+      forward
+    </source>
+    
+    <filter **>
+      type datadiff
+      diff_idx_key a,b
+      key_diff c
+      key_add d
+    </filter>
+    
+    <match **>
+      type stdout
+    </match>
+
+Assuming following inputs are coming:
+
+    $ echo '{"a":"foo","b":"bar","c":1}' | fluent-cat raw.test
+    $ echo '{"a":"foo","b":"bar","c":2}' | fluent-cat raw.test
+    $ echo '{"a":"foo","b":"bar","c":2.5}' | fluent-cat raw.test
+
+then output bocomes as belows (like, | grep WARN | grep -v favicon):
+
+    raw.test: {"a":"foo","b":"bar","c":1,"d":1}
+    raw.test: {"a":"foo","b":"bar","c":2,"d":0.5}
+
+### Example 2:
+
+時間の差
+
     <source>
       forward
     </source>
@@ -35,6 +68,7 @@ then output bocomes as belows (like, | grep WARN | grep -v favicon):
 
     raw.test: {"a":"foo","b":"bar","c":"2016/07/01 00:00:00","d":10}
     raw.test: {"a":"foo","b":"bar","c":"2016/07/01 00:00:10","d":50}
+
 
 ## Parameters
 
